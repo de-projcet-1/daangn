@@ -42,7 +42,7 @@ class Item(models.Model):
 # ItemKeyword_table
 class ItemKeyword(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)  # 외래키: Region 참조
     name = models.CharField(max_length=100)  # 키워드
     frequency = models.IntegerField(default=0)  # 빈도수
     created_at = models.DateTimeField(auto_now_add=True)  # 생성일
