@@ -27,7 +27,7 @@ class Item(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
     category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE)  # 외래키: ItemCategory 참조
     name = models.CharField(max_length=50)  # 상품명
-    price = models.IntegerField()  # 가격
+    price = models.IntegerField(default=0)  # 가격
     detail_url = models.CharField(max_length=255)  # 상세 페이지 URL
     chat_count = models.IntegerField(default=0)  # 채팅 수
     interest_count = models.IntegerField(default=0)  # 관심 수
