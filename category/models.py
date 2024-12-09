@@ -1,3 +1,9 @@
+# import os
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "daangn.settings")
+#
+# import django
+# django.setup()
+
 from django.db import models
 
 # Region_table
@@ -11,8 +17,11 @@ class Region(models.Model):
     def __str__(self):
         return f"{self.district} {self.town}"  # 관리자 페이지 표시용
 
+    class Meta:
+        db_table = 'region'
+
 # ItemCategory_table
-class ItemCategory(models.Model):
+class Category(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     name = models.CharField(max_length=50)  # 카테고리 이름
     created_at = models.DateTimeField(auto_now_add=True)  # 생성일
@@ -21,11 +30,14 @@ class ItemCategory(models.Model):
     def __str__(self):
         return self.name  # 관리자 페이지 표시용
 
+    class Meta:
+        db_table = 'item_category'
+
 # Item_table
 class Item(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
-    category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE)  # 외래키: ItemCategory 참조
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)  # 외래키: ItemCategory 참조
     name = models.CharField(max_length=50)  # 상품명
     price = models.IntegerField(default=0)  # 가격
     detail_url = models.CharField(max_length=255)  # 상세 페이지 URL
@@ -39,10 +51,14 @@ class Item(models.Model):
     def __str__(self):
         return self.name  # 관리자 페이지 표시용
 
-# ItemKeyword_table
-class ItemKeyword(models.Model):
+    class Meta:
+        db_table = 'item'
+
+# Keyword_table
+class Keyword(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)  # 외래키: ItemCategory 참조
     name = models.CharField(max_length=100)  # 키워드
     frequency = models.IntegerField(default=0)  # 빈도수
     created_at = models.DateTimeField(auto_now_add=True)  # 생성일
@@ -50,3 +66,6 @@ class ItemKeyword(models.Model):
 
     def __str__(self):
         return self.name  # 관리자 페이지 표시용
+
+    class Meta:
+        db_table = 'keyword'

@@ -3,7 +3,7 @@
 
 import os
 import sys
-from dotenv import read_dotenv
+from dotenv import load_dotenv
 
 def main():
     """Run administrative tasks."""
@@ -20,5 +20,5 @@ def main():
 
 
 if __name__ == '__main__':
-    read_dotenv()
+    load_dotenv()
     main()
