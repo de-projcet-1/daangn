@@ -1,31 +1,47 @@
+import io
+from wordcloud import WordCloud
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from category.models import Keyword, Region
-
 
 def get_region(request):
     """지역 목록 조회"""
     regions = Region.objects.all().values('id', 'district', 'town')
-    response_data = list(regions)
-    return JsonResponse(response_data, safe=False)
+    return render(request, 'category/keyword.html', {'regions': regions})
 
 def get_keywords_by_region(request):
-    """지역 별 키워드 조회"""
+    """지역별 키워드 조회"""
     region_id = request.GET.get('region_id', None)
-    keywords = Keyword.objects.filter(region_id=region_id, frequency__gte=2).select_related('region')
+    if not region_id:
+        return JsonResponse({'error': 'region_id is required'}, status=400)
 
-    # 지역별로 그룹화
-    region_keywords = {}
-    for keyword in keywords:
-        region_name = f"{keyword.region.district} {keyword.region.town}"
-        if region_name not in region_keywords:
-            region_keywords[region_name] = {}
+    # 해당 지역의 키워드와 빈도수 가져오기
+    keywords = (
+        Keyword.objects.filter(region_id=region_id, frequency__gte=2)
+        .values('name', 'frequency')
+    )
+    keyword_data = {item['name']: item['frequency'] for item in keywords}
 
-        region_keywords[region_name][keyword.name] = keyword.frequency
+    return JsonResponse({'keywords': keyword_data})
 
-    response_data = [
-        {"region": region, "keywords": keywords}
-        for region, keywords in region_keywords.items()
-    ]
+def generate_wordcloud(request, region_id):
+    """지역별 키워드 시각화"""
+    keywords = (
+        Keyword.objects.filter(region_id=region_id, frequency__gte=2)
+        .values('name', 'frequency')
+    )
+    word_frequencies = {item['name']: item['frequency'] for item in keywords}
 
-    return JsonResponse(response_data, safe=False)
+    font_path = '/NanumGothic-Regular.ttf'
+    wordcloud = WordCloud(
+        font_path=font_path,
+        width=800,
+        height=400,
+        background_color='white',
+    ).generate_from_frequencies(word_frequencies)
+
+    image = io.BytesIO()
+    wordcloud.to_image().save(image, format='PNG')
+    image.seek(0)
+
+    return HttpResponse(image, content_type='image/png')

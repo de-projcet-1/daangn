@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Region WordCloud</title>
+
+</head>
+<body>
+    <h1>인기 있는 중고 물품</h1>
+
+    <!-- 지역 선택 -->
+    <select id="region-select">
+        <option value="">--지역 선택--</option>
+        {% for region in regions %}
+        <option value="{{ region.id }}">{{ region.district }} {{ region.town }}</option>
+        {% endfor %}
+    </select>
+    <button id="generate-wordcloud" style="margin-left: 10px;">조회</button>
+
+    <!-- Word Cloud Image -->
+    <div style="margin-top: 20px;">
+        <img id="wordcloud-image" src="" alt="워드클라우드" style="display: none; width: 800px; height: 400px;">
+    </div>
+
+    <script>
+        document.getElementById('generate-wordcloud').addEventListener('click', function () {
+            const regionId = document.getElementById('region-select').value;
+            const wordcloudImage = document.getElementById('wordcloud-image');
+
+            if (!regionId) {
+                alert("지역을 선택해주세요!");
+                return;
+            }
+
+            // Update the image source dynamically
+            wordcloudImage.src = `/item/generate-wordcloud/${regionId}/`;
+            wordcloudImage.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -1,12 +1,11 @@
+# 스크립트 실행 시 해제
 # import os
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "daangn.settings")
-#
 # import django
 # django.setup()
 
 from django.db import models
 
-# Region_table
 class Region(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     district = models.CharField(max_length=50)  # 구
@@ -20,7 +19,6 @@ class Region(models.Model):
     class Meta:
         db_table = 'region'
 
-# ItemCategory_table
 class Category(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     name = models.CharField(max_length=50)  # 카테고리 이름
@@ -33,7 +31,6 @@ class Category(models.Model):
     class Meta:
         db_table = 'item_category'
 
-# Item_table
 class Item(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
@@ -54,7 +51,6 @@ class Item(models.Model):
     class Meta:
         db_table = 'item'
 
-# Keyword_table
 class Keyword(models.Model):
     id = models.AutoField(primary_key=True)  # 기본키
     region = models.ForeignKey(Region, on_delete=models.CASCADE)  # 외래키: Region 참조
